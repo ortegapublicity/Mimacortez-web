@@ -1,6 +1,0 @@
-{
-  "name": "Mima Cortez - Portafolio",
-  "description": "Sitio web centralizado y portafolio de Mima Cortez, artista, activista y diseñadora de moda.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
