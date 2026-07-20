@@ -1,9 +1,33 @@
+import { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
+import { createScope, onScroll, utils } from 'animejs';
 import { socialLinks } from '../data';
 
 export default function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
+    const scope = createScope({ root: sectionRef }).add(() => {
+      const observer = onScroll({
+        target: document.body,
+        sync: true,
+        onUpdate: (self) => {
+          const scroll = Math.min(self.scroll, 600);
+          utils.set('.hero-parallax-back', { translateY: scroll * 0.18 });
+          utils.set('.hero-parallax-glow', { translateY: scroll * -0.1 });
+        },
+      });
+      return () => observer.revert();
+    });
+
+    return () => scope.revert();
+  }, []);
+
   return (
-    <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden min-h-[90vh] flex items-center">
+    <section id="inicio" ref={sectionRef} className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden min-h-[90vh] flex items-center scroll-mt-24">
       <div className="max-w-6xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center gap-12 lg:gap-20 text-center md:text-left">
         
         {/* Left Text Column */}
@@ -55,28 +79,32 @@ export default function Hero() {
           className="flex-1 w-full max-w-md lg:max-w-lg relative order-1 md:order-2"
         >
           {/* Main Image Container */}
-          <div className="aspect-[4/5] rounded-[2rem] overflow-hidden relative shadow-2xl shadow-purple-500/20 border border-white/10 z-10 group">
-            {/* Replace /profile.jpg with the actual path once downloaded */}
-            <img 
-              src="/profile.jpg" 
-              alt="Mima Cortez" 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              onError={(e) => {
-                // Fallback si no encuentran la imagen profile.jpg en la carpeta public
-                e.currentTarget.src = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=800&h=1000';
-              }}
-            />
+          <div className="hero-image-frame aspect-[4/5] rounded-[2rem] overflow-hidden relative shadow-2xl shadow-purple-500/20 border border-white/10 z-10 group">
+            <picture>
+              <source srcSet="/profile.avif" type="image/avif" />
+              <source srcSet="/profile.webp" type="image/webp" />
+              <img
+                src="/profile.jpg"
+                alt="Mima Cortez"
+                width={900}
+                height={1125}
+                fetchPriority="high"
+                loading="eager"
+                decoding="async"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            </picture>
             <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent pointer-events-none" />
           </div>
           
           {/* Vibrant background glow imitating the colorful graphic */}
-          <div className="absolute -inset-4 bg-gradient-to-tr from-purple-600 via-pink-500 to-orange-400 rounded-[2.5rem] opacity-30 blur-2xl -z-10 animate-pulse-slow"></div>
+          <div className="hero-parallax-glow absolute -inset-4 bg-gradient-to-tr from-purple-600 via-pink-500 to-orange-400 rounded-[2.5rem] opacity-30 blur-2xl -z-10 animate-pulse-slow"></div>
         </motion.div>
 
       </div>
 
       {/* General Section Abstract Background */}
-      <div className="absolute top-1/4 left-0 -translate-x-1/2 w-[800px] h-[800px] opacity-10 pointer-events-none blur-3xl -z-20">
+      <div className="hero-parallax-back absolute top-1/4 left-0 -translate-x-1/2 w-[800px] h-[800px] opacity-10 pointer-events-none blur-3xl -z-20">
         <div className="absolute inset-0 bg-gradient-to-tr from-purple-700 via-rose-600 to-orange-500 rounded-full animate-pulse-slow"></div>
       </div>
     </section>

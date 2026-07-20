@@ -4,7 +4,7 @@ import { ExternalLink } from 'lucide-react';
 
 export default function Press() {
   return (
-    <section className="py-16 md:py-24 relative overflow-hidden">
+    <section id="prensa" className="py-16 md:py-24 relative overflow-hidden scroll-mt-24">
       {/* Decorative gradient blur */}
       <div className="absolute right-0 top-1/2 w-96 h-96 bg-pink-600/10 blur-[100px] rounded-full pointer-events-none -z-10" />
 
